@@ -20,6 +20,7 @@ import {
   ProductPrice,
   ProductButton,
 } from './styles';
+import { add } from 'react-native-reanimated';
 
 interface Product {
   id: string;
@@ -35,14 +36,17 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     async function loadProducts(): Promise<void> {
-      // TODO
+      await api
+        .get('/products')
+        .then(response => setProducts(response.data))
+        .catch(err => console.log(err));
     }
 
     loadProducts();
   }, []);
 
   function handleAddToCart(item: Product): void {
-    // TODO
+    addToCart(item);
   }
 
   return (

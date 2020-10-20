@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 
 import AsyncStorage from '@react-native-community/async-storage';
+import { isConstTypeReference } from 'typescript';
 
 interface Product {
   id: string;
@@ -36,9 +37,26 @@ const CartProvider: React.FC = ({ children }) => {
     loadProducts();
   }, []);
 
-  const addToCart = useCallback(async product => {
-    // TODO ADD A NEW ITEM TO THE CART
-  }, []);
+  const addToCart = useCallback(
+    async product => {
+      const productIndex = products.findIndex(item => item.id === product.id);
+
+
+      if (productIndex !== -1) {
+        const tempProducts = products;
+        tempProducts[productIndex] = {
+          ...tempProducts[productIndex],
+          quantity: tempProducts[productIndex].quantity + 1,
+        };
+
+        setProducts([...tempProducts]);
+      } else {
+        const tempProduct = { ...product, quantity: 1 };
+        setProducts([...products, tempProduct]);
+      }
+    },
+    [products],
+  );
 
   const increment = useCallback(async id => {
     // TODO INCREMENTS A PRODUCT QUANTITY IN THE CART
