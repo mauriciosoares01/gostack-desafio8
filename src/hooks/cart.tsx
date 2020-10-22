@@ -71,38 +71,24 @@ const CartProvider: React.FC = ({ children }) => {
 
   const increment = useCallback(
     async id => {
-      const tempProducts = products;
-      const productIndex = products.findIndex(item => item.id === id);
+      const incremented = products.map(item =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
+      );
 
-      tempProducts[productIndex] = {
-        ...tempProducts[productIndex],
-        quantity: tempProducts[productIndex].quantity + 1,
-      };
-
-      const productsStringified = JSON.stringify(tempProducts);
-      await AsyncStorage.setItem('@app:cart', productsStringified);
-
-      setProducts([...tempProducts]);
+      setProducts(incremented);
+      await AsyncStorage.setItem('@app:cart', JSON.stringify(products));
     },
     [products],
   );
 
   const decrement = useCallback(
     async id => {
-      const tempProducts = products;
-      const productIndex = products.findIndex(item => item.id === id);
+      const decremented = products.map(item =>
+        item.id === id ? { ...item, quantity: item.quantity - 1 } : item,
+      );
 
-      if (tempProducts[productIndex].quantity === 1) return;
-
-      tempProducts[productIndex] = {
-        ...tempProducts[productIndex],
-        quantity: tempProducts[productIndex].quantity - 1,
-      };
-
-      const productsStringified = JSON.stringify(tempProducts);
-      await AsyncStorage.setItem('@app:cart', productsStringified);
-
-      setProducts([...tempProducts]);
+      setProducts(decremented);
+      await AsyncStorage.setItem('@app:cart', JSON.stringify(products));
     },
     [products],
   );
